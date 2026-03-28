@@ -1,0 +1,2 @@
+char = "↭"
+print(ord(char))
