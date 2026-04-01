@@ -46,7 +46,7 @@ def bewaar_speler(player):
 
 
 def controleer_speler(player):
-    with open("players_history.txt", "r", encoding="utf-8)") as input_file:
+    with open("players_history.txt", "r", encoding="utf-8") as input_file:
         for line in input_file:
             name, win, loss, draw = line.split(",")
             if player.name.lower() == name.lower():
