@@ -19,5 +19,15 @@ Het laatste idee is een idee dat ik gekregen heb nadat ik eens door de cursus va
 
 Ik ben begonnen met het toevoegen van de class Player in een apart bestand players.py en het tekstbestand players_history.txt om de scores en spelers te bewaren. 
 
+## 6 april 2026
 
+Na wat proberen met de class player en het bestand, heb ik dit idee even on hold gezet. Ik moet wat verder nadenken over de flow van het programma, want er gaat wat moeten wijzigen om dit nieuw startscherm te tonen. Dit pik ik mogelijks later terug op. 
+
+Ik ben overgeschakeld naar het toevoegen van de kleur (suits) voor de kaarten. De decks werden nu opgebouwd door enkel het cijfertje. Een deck was dan 4 keer het aantal kaarten. Deze logica is nu lichtjes anders natuurlijk. Een deck nu is een combinatie van de kaarten en de 4 kleuren.
+
+De aanpassingen hiervoor moesten gebeuren in het trekken van de kaarten (functie draw_cards) en ook in de berekening van de score (calculate score). De draw_cards voegen we de kleur + waarde toe als nieuwe constante (omdat een kaart nu uit 2 karaters bestaat). Ook voor het tellen moeten we natuurlijk de kleur weghalen om te kunnen tellen. 
+
+Na de eerste test gaf dit een vierkant als afbeelding. Dus de symbolen werden niet herkend. Via google heb ik een nieuw lettertype gevonden dat dit wel ondersteund. Door het veranderen van het lettertype waren de getallen iets te groot naar mijn mening. Deze heb ik dan ook vervanngen door de kleinere variant van het lettertype.
+
+De kaarten zelf waren nu rood en blauw, ik heb dit ook veranderd als de kleur zwart is, dat de kaart zelf zwart werd, en ook voor rood. Dit kwam niet zo mooi uit omwille van de zwarte achtergrond, dus heb ik dit even grijs gemaakt. Dit moet ik later nog herbekijken.
 
