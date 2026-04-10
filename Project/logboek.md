@@ -31,3 +31,12 @@ Na de eerste test gaf dit een vierkant als afbeelding. Dus de symbolen werden ni
 
 De kaarten zelf waren nu rood en blauw, ik heb dit ook veranderd als de kleur zwart is, dat de kaart zelf zwart werd, en ook voor rood. Dit kwam niet zo mooi uit omwille van de zwarte achtergrond, dus heb ik dit even grijs gemaakt. Dit moet ik later nog herbekijken.
 
+
+## 10 april 2026
+
+Na een aantal spelletjes om te kijken of de kleuren en kaarten goed zitten, zag ik dat bij mijn eigen hand met A, 6 en A een score werd gegeven van 28. Dit is niet correct, dus er zit ergens een bug in het programma. Omdat de fout hoogstwaarschijnlijk in de functie calculate_score() zit, heb ik deze in een apart bestand gezet (calculate_score.py) zodat ik zelf een hand kon meegeven om te kijken wat er precies gebeurde. 
+
+Bij de eerste test met een hand met 1x A en een 9, gaf de printstatement van het count_aces 0 aan. Hoe het aantal aces geteld wordt zat dus fout en eigenlijk is dat ook logisch. Door de kleuren toe te voegen, bestaat de "hand" niet enkel meer uit A, 1, 2, enz. maar ook de icoontjes zelf. Deze moeten we dus eruit zien te halen. Met de aanpassing lijkt het nu wel te werken. 
+
+Omdat dit moeilijk te na te bootsen valt, heb ik een aantal tests geschreven om te zien of het resultaat van calculat_score is wat ik verwacht. En de 7 testen slagen. Dus dat is goed. 
+

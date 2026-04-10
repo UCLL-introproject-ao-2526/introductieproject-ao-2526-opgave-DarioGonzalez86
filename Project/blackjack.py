@@ -96,7 +96,7 @@ def draw_cards(player, dealer, reveal):
 def calculate_score(hand):
     # calculate hand score fresh every time, check how many aces we have
     hand_score = 0
-    aces_count = hand.count('A')
+    aces_count = sum(1 for card in hand if card[:-1] == 'A')
     for i in range(len(hand)):
         card_value = hand[i][:-1]
         # for 2,3,4,5,6,7,8,9 - just add the number to total
