@@ -38,5 +38,14 @@ Na een aantal spelletjes om te kijken of de kleuren en kaarten goed zitten, zag 
 
 Bij de eerste test met een hand met 1x A en een 9, gaf de printstatement van het count_aces 0 aan. Hoe het aantal aces geteld wordt zat dus fout en eigenlijk is dat ook logisch. Door de kleuren toe te voegen, bestaat de "hand" niet enkel meer uit A, 1, 2, enz. maar ook de icoontjes zelf. Deze moeten we dus eruit zien te halen. Met de aanpassing lijkt het nu wel te werken. 
 
-Omdat dit moeilijk te na te bootsen valt, heb ik een aantal tests geschreven om te zien of het resultaat van calculat_score is wat ik verwacht. En de 7 testen slagen. Dus dat is goed. 
+Omdat dit moeilijk te na te bootsen valt, heb ik een aantal tests geschreven om te zien of het resultaat van calculat_score is wat ik verwacht. En de 7 testen slagen. Dus dat is goed. Ik heb zowel het aparte bestand met de functie als de testen in een map "oude bestanden" gezet om de rootdirectory niet te vervuilen met allerlei bestanden. 
+
+
+## 11 april 2026
+
+Vandaag ben ik opnieuw gestart met het nieuwe startscherm. Ik heb via CoPilot een afbeelding met blackjack laten genereren om als achtergrond te gebruiken. Op het startscherm krijg je 2 knoppen te zien: "nieuwe speler" en "bestaande speler". De bedoeling is dat wanneer je kiest voor "nieuwe speler" er in het CSV bestand gekeken wordt of de speler al bestaat. Zo ja, krijg je een foutmelding. Zo nee, wordt de speler aangemaakt met 0-0-0 scores. Dit is ondertussen in orde. De bedoeling is dat we de naam en scores meenemen naar het spel zelf, maar dat is voor later. 
+
+Bij het het klikken op "bestaande speler" moet je uw naam invullen, we gaan dan kijken of de speler bestaat, halen zijn spelhistoriek op, en starten het spel. Hier ben ik nog niet meer begonnen. Dit is dus ook voor later. 
+
+Het gebruik van de CSV leek me makkelijker dan te werken met Classes, dus de code rond de class player heb ik in principe niet meer nodig. Later te bekijken of ik dit ook in de map "oude bestanden" zet. Ook de CSV staat nu nog in de hoofddirectory, mogelijks ga ik deze verplaatsen naar de recent aangemaakte map "assets" waar ik alles zet van afbeeldingen, letterypes, ...
 
