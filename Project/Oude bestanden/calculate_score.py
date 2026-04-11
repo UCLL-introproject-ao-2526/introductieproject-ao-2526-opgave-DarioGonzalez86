@@ -1,3 +1,5 @@
+# Dit was enkel nodig om de bug te vinden in de functie calculate_score(hand). Ik heb dit ondertusen in een aparte map gezet om de bestanden overzichtelijker te houden.
+
 cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 suits = ['♠', '♥', '♦', '♣']
 one_deck = [value + suit for value in cards for suit in suits]

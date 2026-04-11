@@ -1,5 +1,4 @@
 from blackjack import calculate_score
-import pytest
 
 
 def test_single_ace_with_9():
