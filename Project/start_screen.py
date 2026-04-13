@@ -2,7 +2,6 @@ import pygame
 import sys
 import csv
 import os
-# from player_manager import create_player, player_exists, load_player
 from blackjack import start_blackjack_game
 
 pygame.init()
@@ -63,6 +62,13 @@ def stop_background_music():
     pygame.mixer.music.stop()
 
 
+# --- Achtergrond laden ---
+try:
+    background = pygame.image.load("Assets/Images/blackjack.png")
+except:
+    background = None
+
+
 #  Scherm voor nieuwe speler toe te voegen
 def new_player_screen():
     input_text = ""
@@ -70,7 +76,10 @@ def new_player_screen():
     active = True
 
     while active:
-        screen.fill(black)
+        if background:
+            screen.blit(background, (0, 0))
+        else:
+            screen.fill((0, 0, 0))
 
         # --- EVENTS ---
         for event in pygame.event.get():
@@ -97,26 +106,26 @@ def new_player_screen():
                         error_message = "Player already exists!"
                     else:
                         add_player(input_text)
-                        return  # terug naar startscherm
+                        return input_text
 
         # --- TEKENEN ---
-        title = font.render("New Player", True, yellow)
+        title = font.render("Add New Player", True, yellow)
         screen.blit(title, (WIDTH//2 - title.get_width()//2, 80))
 
         # Inputveld
-        pygame.draw.rect(screen, white, (300, 200, 400, 50), border_radius=8)
+        pygame.draw.rect(screen, white, (568, 500, 400, 50), border_radius=8)
         name_label = smaller_font.render(input_text, True, black)
-        screen.blit(name_label, (310, 210))
+        screen.blit(name_label, (568, 500))
 
         # Confirm‑knop
-        confirm_button = pygame.Rect(350, 300, 300, 60)
-        draw_button("Confirm", 350, 300, 300, 60,
+        confirm_button = pygame.Rect(618, 570, 300, 60)
+        draw_button("Confirm", 618, 570, 300, 60,
                     confirm_button.collidepoint(pygame.mouse.get_pos()))
 
         # Foutmelding
         if error_message:
-            err = smaller_font.render(error_message, True, red)
-            screen.blit(err, (WIDTH//2 - err.get_width()//2, 380))
+            err = smaller_font.render(error_message, True, yellow)
+            screen.blit(err, (WIDTH//2 - err.get_width()//2, 630))
 
         pygame.display.flip()
 
@@ -134,7 +143,6 @@ def text_input(prompt):
     active = True
 
     while active:
-        screen.fill(black)
 
         label = smaller_font.render(prompt, True, white)
         screen.blit(label, (50, 200))
@@ -163,15 +171,7 @@ def text_input(prompt):
                     input_text += event.unicode
 
 
-# --- Achtergrond laden ---
-try:
-    background = pygame.image.load("Assets/Images/blackjack.png")
-except:
-    background = None
-
-
 def start_screen():
-    """Toont het startscherm en retourneert een player dict."""
     start_background_music()
     while True:
         if background:
@@ -181,7 +181,7 @@ def start_screen():
 
         # Knoppen
         mouse = pygame.mouse.get_pos()
-        click = pygame.mouse.get_pressed()
+        # click = pygame.mouse.get_pressed()
 
         btn_new = pygame.Rect(443, 512, 300, 70)
         btn_existing = pygame.Rect(793, 512, 300, 70)
@@ -202,9 +202,9 @@ def start_screen():
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 # --- NEW PLAYER ---
                 if hover_new:
-                    new_player_screen()   # <-- DIT IS ALLES
+                    name = new_player_screen()
                     stop_background_music()
-                    start_blackjack_game()
+                    start_blackjack_game(name)
 
                 # --- RETURNING PLAYER ---
                 if hover_existing:

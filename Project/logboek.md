@@ -49,3 +49,15 @@ Bij het het klikken op "bestaande speler" moet je uw naam invullen, we gaan dan 
 
 Het gebruik van de CSV leek me makkelijker dan te werken met Classes, dus de code rond de class player heb ik in principe niet meer nodig. Later te bekijken of ik dit ook in de map "oude bestanden" zet. Ook de CSV staat nu nog in de hoofddirectory, mogelijks ga ik deze verplaatsen naar de recent aangemaakte map "assets" waar ik alles zet van afbeeldingen, letterypes, ...
 
+
+## 13 april 2026
+
+Ik heb eerst wat verder gewerkt aan het scherm voor een nieuwe speler toe te voegen (inputvelden wat verschoven, zelde achtergrond als het startscherm, ...). De volgende stap was deze hele flow afwerken. Dus starten met een nieuwe speler aan te maken, paar spelletjes spelen, zorgen dat de score opgeslaan wordt in het CSV bestand. Dit loopt nu allemaal goed. De CSV wordt aangepast zodra een spel voorbij is met de correcte score. 
+
+Ik heb ook een paar klene aanpassigen gedaan m.b.t. de layout (spelernaam ipv player, even groot speelscherm voor startscherm als blackjack scherm, zelfde knoppen in het blackjack spel zelf, ...). Na de aanpassing gezien dat er nog wat aanpassingen moesten gebeuren. Deze zijn voor een andere dag. Ik weet ook niet of ik de achtergrond hetzelfde ga houden:
+
+
+![afbeelding](Assets\Images\Aanpassen_achtergrond.jpg)
+
+
+

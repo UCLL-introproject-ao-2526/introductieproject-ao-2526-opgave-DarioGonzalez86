@@ -2,9 +2,39 @@
 import copy
 import random
 import pygame
+import csv
+import os
 
 
-def start_blackjack_game():
+def load_players_csv(path="players.csv"):
+    players = {}
+    if not os.path.exists(path):
+        return players
+    with open(path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            players[row["Name"]] = {
+                "Win": int(row["Win"]),
+                "Lose": int(row["Lose"]),
+                "Draw": int(row["Draw"])
+            }
+    return players
+
+
+def save_players_csv(players, path="players.csv"):
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=["Name", "Win", "Lose", "Draw"])
+        writer.writeheader()
+        for name, stats in players.items():
+            writer.writerow({
+                "Name": name,
+                "Win": stats["Win"],
+                "Lose": stats["Lose"],
+                "Draw": stats["Draw"]
+            })
+
+
+def start_blackjack_game(name):
 
     pygame.init()
     # game variables
@@ -12,14 +42,31 @@ def start_blackjack_game():
     suits = ['♠', '♥', '♦', '♣']
     one_deck = [value + suit for value in cards for suit in suits]
     decks = 4
-    WIDTH = 600
-    HEIGHT = 900
+    WIDTH = 1536
+    HEIGHT = 1024
     screen = pygame.display.set_mode([WIDTH, HEIGHT])
     pygame.display.set_caption('Pygame Blackjack!')
     fps = 60
     timer = pygame.time.Clock()
     font = pygame.font.Font("Assets/Fonts/DejaVuSans.ttf", 44)
     smaller_font = pygame.font.Font("Assets/Fonts/DejaVuSans.ttf", 36)
+
+    # standaardkleuren, herbekijken zodra nieuwe kleuren toegevoegd zijn:
+    white = (255, 255, 255)
+    black = (0, 0, 0)
+    gray = (180, 180, 180)
+    # green = (0, 200, 0)
+    blue = (0, 120, 255)
+
+    #  kleuren via adobe colorpalette op basis van achtergrond
+    darkblue = (22, 45, 115)
+    green = (45, 115, 62)
+    darkgreen = (25, 64, 35)
+    yellow = (242, 192, 99)
+    red = (217, 7, 7)
+
+    background = pygame.image.load("Assets/Images/blackjack.png")
+
     green = (45, 115, 62)
     active = False
     # win, loss, draw/push
@@ -33,8 +80,27 @@ def start_blackjack_game():
     reveal_dealer = False
     hand_active = False
     add_score = False
-    results = ['', 'PLAYER BUSTED o_O',
-               'Player WINS! :)', 'DEALER WINS :(', 'TIE GAME...']
+    results = ['', f'{name} BUSTED o_O',
+               f'{name} WINS! :)', 'DEALER WINS :(', 'TIE GAME...']
+
+    # spelers ophalen en scores te kunnen updaten later.
+    players = load_players_csv()
+    if name not in players:
+        players[name] = {"Win": 0, "Lose": 0, "Draw": 0}
+
+    records = [
+        players[name]["Win"],
+        players[name]["Lose"],
+        players[name]["Draw"]
+    ]
+
+    # draw buttons:
+    def draw_button(text, x, y, w, h, hover):
+        color = darkblue if hover else darkgreen
+        pygame.draw.rect(screen, color, (x, y, w, h), border_radius=10)
+        label = smaller_font.render(text, True, yellow)
+        screen.blit(label, (x + (w - label.get_width()) // 2,
+                            y + (h - label.get_height()) // 2))
 
     # deal cards by selecting randomly from deck, and make function for one card at a time
 
@@ -127,11 +193,20 @@ def start_blackjack_game():
         button_list = []
         # initially on startup (not active) only option is to deal new hand
         if not act:
-            deal = pygame.draw.rect(screen, 'white', [150, 20, 300, 100], 0, 5)
-            pygame.draw.rect(screen, 'green', [150, 20, 300, 100], 3, 5)
-            deal_text = font.render('DEAL HAND', True, 'black')
-            screen.blit(deal_text, (165, 50))
+            # logica oude knop
+            # deal = pygame.draw.rect(screen, 'white', [150, 20, 300, 100], 0, 5)
+            # pygame.draw.rect(screen, 'green', [150, 20, 300, 100], 3, 5)
+            # deal_text = font.render('DEAL HAND', True, 'black')
+            # screen.blit(deal_text, (165, 50))
+            # button_list.append(deal)
+
+            # logica nieuwe knop:
+            mouse = pygame.mouse.get_pos()
+            deal = pygame.Rect(618, 80, 300, 100)
+            hover_deal = deal.collidepoint(mouse)
+            draw_button("Deal hand", 618, 80, 300, 100, hover_deal)
             button_list.append(deal)
+
         # once game started, shot hit and stand buttons and win/loss records
         else:
             hit = pygame.draw.rect(screen, 'white', [0, 700, 300, 100], 0, 5)
@@ -189,7 +264,7 @@ def start_blackjack_game():
     while run:
         # run game at our framerate and fill screen with bg color
         timer.tick(fps)
-        screen.fill(green)  # TO DO change color
+        screen.blit(background, (0, 0))
         # initial deal to player and dealer
         if initial_deal:
             for i in range(2):
@@ -254,6 +329,13 @@ def start_blackjack_game():
 
         outcome, records, add_score = check_endgame(
             hand_active, dealer_score, player_score, outcome, records, add_score)
+
+        # Update CSV wanneer een hand is afgelopen
+        if outcome != 0 and not add_score:
+            players[name]["Win"] = records[0]
+            players[name]["Lose"] = records[1]
+            players[name]["Draw"] = records[2]
+            save_players_csv(players)
 
         pygame.display.flip()
     pygame.quit()
