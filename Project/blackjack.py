@@ -113,10 +113,34 @@ def start_blackjack_game(name):
     # draw scores for player and dealer on screen
 
     def draw_scores(player, dealer):
-        screen.blit(font.render(f'Score: {player}', True, 'white'), (350, 400))
+        # score speler
+        text_player = smaller_font.render(f"Score: {player}", True, darkgreen)
+        w = text_player.get_width()
+        h = text_player.get_height()
+        x, y = 350, 400
+
+        pygame.draw.rect(screen, yellow, (x, y, w, h),
+                         border_radius=10)
+        screen.blit(text_player, (x + (w - text_player.get_width()) // 2,
+                                  y + (h - text_player.get_height()) // 2))
+
+        # score dealer
         if reveal_dealer:
-            screen.blit(font.render(
-                f'Score: {dealer}', True, 'white'), (350, 100))
+            text_dealer = smaller_font.render(
+                f"Score: {dealer}", True, darkgreen)
+            w2 = text_dealer.get_width()
+            h2 = text_dealer.get_height()
+            x2, y2 = 350, 120
+
+            pygame.draw.rect(screen, yellow,
+                             (x2, y2, w2, h2), border_radius=10)
+            screen.blit(text_dealer, (x2 + (w2 - text_dealer.get_width()) // 2,
+                                      y2 + (h2 - text_dealer.get_height()) // 2))
+
+    # screen.blit(font.render(f'Score: {player}', True, 'white'), (350, 400))
+    # if reveal_dealer:
+    #     screen.blit(font.render(
+    #         f'Score: {dealer}', True, 'white'), (350, 100))
 
     # draw cards visually onto screen
 
@@ -189,8 +213,9 @@ def start_blackjack_game(name):
 
     # draw game conditions and buttons
 
-    def draw_game(act, record, result):
+    def draw_game(act, record, result, name):
         button_list = []
+        player_name = name
         # initially on startup (not active) only option is to deal new hand
         if not act:
             # logica oude knop
@@ -209,30 +234,75 @@ def start_blackjack_game(name):
 
         # once game started, shot hit and stand buttons and win/loss records
         else:
-            hit = pygame.draw.rect(screen, 'white', [0, 700, 300, 100], 0, 5)
-            pygame.draw.rect(screen, 'green', [0, 700, 300, 100], 3, 5)
-            hit_text = font.render('HIT ME', True, 'black')
-            screen.blit(hit_text, (55, 735))
+            # logica oude knoppen hit & stand
+            # hit = pygame.draw.rect(screen, 'white', [0, 700, 300, 100], 0, 5)
+            # pygame.draw.rect(screen, 'green', [0, 700, 300, 100], 3, 5)
+            # hit_text = font.render('HIT ME', True, 'black')
+            # screen.blit(hit_text, (55, 735))
+            # button_list.append(hit)
+            # stand = pygame.draw.rect(
+            #     screen, 'white', [300, 700, 300, 100], 0, 5)
+            # pygame.draw.rect(screen, 'green', [300, 700, 300, 100], 3, 5)
+            # stand_text = font.render('STAND', True, 'black')
+            # screen.blit(stand_text, (355, 735))
+            # button_list.append(stand)
+            # score_text = smaller_font.render(
+            #     f'Wins: {record[0]}   Losses: {record[1]}   Draws: {record[2]}', True, 'white')
+            # screen.blit(score_text, (15, 840))
+
+            # logica nieuwe knoopen hit & stand
+            mouse = pygame.mouse.get_pos()
+            hit = pygame.Rect(10, 700, 300, 100)
+            hover_hit = hit.collidepoint(mouse)
+            draw_button("Hit", 10, 700, 300, 100, hover_hit)
             button_list.append(hit)
-            stand = pygame.draw.rect(
-                screen, 'white', [300, 700, 300, 100], 0, 5)
-            pygame.draw.rect(screen, 'green', [300, 700, 300, 100], 3, 5)
-            stand_text = font.render('STAND', True, 'black')
-            screen.blit(stand_text, (355, 735))
+            stand = pygame.Rect(350, 700, 300, 100)
+            hover_stand = stand.collidepoint(mouse)
+            draw_button("Stand", 350, 700, 300, 100, hover_stand)
             button_list.append(stand)
+
+            player_text = smaller_font.render(
+                f"Game history of {player_name}:", True, "white")
+            player_text_width = player_text.get_width()
             score_text = smaller_font.render(
-                f'Wins: {record[0]}   Losses: {record[1]}   Draws: {record[2]}', True, 'white')
-            screen.blit(score_text, (15, 840))
+                f'Wins: {record[0]}   Losses: {record[1]}   Draws: {record[2]}', True, "white")
+            score_text_width = score_text.get_width()
+            screen_width = screen.get_width()
+            x1 = (screen_width - player_text_width) // 2
+            x2 = (screen_width - score_text_width) // 2
+            screen.blit(player_text, (x1, 20))
+            screen.blit(score_text, (x2, 80))
+
         # if there is an outcome for the hand that was played, display a restart button and tell user what happened
         if result != 0:
-            screen.blit(font.render(results[result], True, 'white'), (15, 25))
-            deal = pygame.draw.rect(
-                screen, 'white', [150, 220, 300, 100], 0, 5)
-            pygame.draw.rect(screen, 'green', [150, 220, 300, 100], 3, 5)
-            pygame.draw.rect(screen, 'black', [153, 223, 294, 94], 3, 5)
-            deal_text = font.render('NEW HAND', True, 'black')
-            screen.blit(deal_text, (165, 250))
-            button_list.append(deal)
+            # oude logica voor new hand knop
+            # screen.blit(font.render(results[result], True, 'white'), (15, 25))
+            # deal = pygame.draw.rect(
+            #     screen, 'white', [150, 220, 300, 100], 0, 5)
+            # pygame.draw.rect(screen, 'green', [150, 220, 300, 100], 3, 5)
+            # pygame.draw.rect(screen, 'black', [153, 223, 294, 94], 3, 5)
+            # deal_text = font.render('NEW HAND', True, 'black')
+            # screen.blit(deal_text, (165, 250))
+            # button_list.append(deal)
+
+            # toon resultaat:
+            text_result = font.render(results[result], True, red)
+            text_width = text_result.get_width()
+            text_height = text_result.get_height()
+            screen_width = screen.get_width()
+            x = (screen_width - text_width) // 2
+
+            pygame.draw.rect(
+                screen, yellow, (x, 500, text_width, text_height), border_radius=10)
+            screen.blit(text_result, (x, 500))
+
+            # screen.blit(font.render(results[result], True, 'white'), (15, 25))
+            mouse = pygame.mouse.get_pos()
+            new_hand = pygame.Rect(150, 220, 300, 100)
+            hover_new = new_hand.collidepoint(mouse)
+            draw_button("New hand", 150, 220, 300, 100, hover_new)
+            button_list.append(new_hand)
+
         return button_list
 
     # check endgame conditions function
@@ -280,7 +350,7 @@ def start_blackjack_game(name):
                 if dealer_score < 17:
                     dealer_hand, game_deck = deal_cards(dealer_hand, game_deck)
             draw_scores(player_score, dealer_score)
-        buttons = draw_game(active, records, outcome)
+        buttons = draw_game(active, records, outcome, name)
 
         # event handling, if quit pressed, then exit game
         for event in pygame.event.get():
@@ -317,7 +387,6 @@ def start_blackjack_game(name):
                             outcome = 0
                             hand_active = True
                             reveal_dealer = False
-                            outcome = 0
                             add_score = True
                             dealer_score = 0
                             player_score = 0

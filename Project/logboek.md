@@ -60,4 +60,10 @@ Ik heb ook een paar klene aanpassigen gedaan m.b.t. de layout (spelernaam ipv pl
 ![afbeelding](Assets\Images\Aanpassen_achtergrond.jpg)
 
 
+## 14 april 2026
+
+De knoppen en layout van het speelscherm allemaal aangepast. In principe ben ik klaar met wat ik wou doen voor het starten van een nieuwe speler. De volgende stap gaat zijn de flow voor een bestaande speler voorzien. 
+
+
+
 
