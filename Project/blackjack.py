@@ -4,6 +4,7 @@ import random
 import pygame
 import csv
 import os
+import sys
 
 
 def load_players_csv(path="players.csv"):
@@ -355,7 +356,8 @@ def start_blackjack_game(name):
         # event handling, if quit pressed, then exit game
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                pygame.quit()
+                sys.exit()
             if event.type == pygame.MOUSEBUTTONUP:
                 if not active:
                     if buttons[0].collidepoint(event.pos):

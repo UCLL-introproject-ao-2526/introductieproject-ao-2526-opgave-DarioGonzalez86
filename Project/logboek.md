@@ -62,7 +62,25 @@ Ik heb ook een paar klene aanpassigen gedaan m.b.t. de layout (spelernaam ipv pl
 
 ## 14 april 2026
 
-De knoppen en layout van het speelscherm allemaal aangepast. In principe ben ik klaar met wat ik wou doen voor het starten van een nieuwe speler. De volgende stap gaat zijn de flow voor een bestaande speler voorzien. 
+De knoppen en layout van het speelscherm allemaal aangepast. In principe ben ik klaar met wat ik wou doen voor het starten van een nieuwe speler. De volgende stap gaat zijn de flow voor een bestaande speler voorzien. Ik heb ook nog veel comment in mijn huidige code staan van oude programmatie die ik voorlopig heb laten staan, deze wil ik ook nog opkuisen. En ik zag dat ik ook veel dingen dubbel (of meer) heb staan, dit kan waarschijnlijk ook beter door dit in een aparte functie te zetten en dan de functie aan te roepen. 
+
+Telkens ik een test deed en het venster sloot, kreeg ik de foutmelding "pygame.error: display Surface quit". In de documentatie en op Google zitten zoeken naar de reden, en blijkbaar werd de loop nog verder uitgevoerd en werd er een poging gedaan om te tekenen op een gesloten venster, vandaar de fout met blit(). Dit heb ik ook aangepast met overal waar event QUIT stond, pygame.quit() en sys.exit() toe te voegen. 
+
+
+## 15 april 2026
+
+De flow voor "bestaande speler" moet zijn:
+- Druk op de knop bestaande speler
+- Vul naam in
+- Controleer of speler bestaat:
+    - Zo nee, geef een melding dat speler nog niet bestaat
+    - Zo ja, haal gegevens op van de csv
+- Start spel
+
+De functie om te kijken of een speler bestaat is er al, enkel wat de functie terug geeft, moet hier anders geïnterpreteerd worden. Ook om het spel te starten, bestaat reeds. Dus enige wat we extra moeten voorzien is het nieuw scherm met inputveld. Een extra optie (later te bekijken) is voor de unhappy flow (speler bestaat nog niet) daar een extra actie te voorzien om een speler aan te maken of terug te kregen naar hoofdscherm. 
+
+Ik merk dat er veel gelijkenissen zijn tussen de 2 functies, later te bekijken of dit eventueel in 1 functie kan, maar met ander input parameters. 
+
 
 
 

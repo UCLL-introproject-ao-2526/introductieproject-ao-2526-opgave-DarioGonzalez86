@@ -84,7 +84,8 @@ def new_player_screen():
         # --- EVENTS ---
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                active = False
+                pygame.quit()
+                sys.exit()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
@@ -124,7 +125,68 @@ def new_player_screen():
 
         # Foutmelding
         if error_message:
-            err = smaller_font.render(error_message, True, yellow)
+            err = smaller_font.render(error_message, True, red)
+            screen.blit(err, (WIDTH//2 - err.get_width()//2, 630))
+
+        pygame.display.flip()
+
+# Scherm voor bestaande speler op te vragen:
+
+
+def existing_player_screen():
+    input_text = ""
+    error_message = ""
+    active = True
+
+    while active:
+        if background:
+            screen.blit(background, (0, 0))
+        else:
+            screen.fill((0, 0, 0))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    input_text = input_text[:-1]
+                elif event.key == pygame.K_RETURN:
+                    pass  # Enter doet niets, Confirm‑knop doet het werk
+                else:
+                    if len(input_text) < 15:
+                        input_text += event.unicode
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mx, my = pygame.mouse.get_pos()
+
+                # Confirm‑knop
+                if confirm_button.collidepoint(mx, my):
+                    if input_text.strip() == "":
+                        error_message = "Name cannot be empty"
+                    elif not player_exists(input_text):
+                        error_message = "Player doesn't exists!"
+                    else:
+                        return input_text
+
+        # --- TEKENEN ---
+        title = font.render("Enter your name", True, yellow)
+        screen.blit(title, (WIDTH//2 - title.get_width()//2, 80))
+
+        # Inputveld
+        pygame.draw.rect(screen, white, (568, 500, 400, 50), border_radius=8)
+        name_label = smaller_font.render(input_text, True, black)
+        screen.blit(name_label, (568, 500))
+
+        # Confirm‑knop
+        confirm_button = pygame.Rect(618, 570, 300, 60)
+        draw_button("Confirm", 618, 570, 300, 60,
+                    confirm_button.collidepoint(pygame.mouse.get_pos()))
+
+        # Foutmelding
+        if error_message:
+            err = smaller_font.render(error_message, True, red)
             screen.blit(err, (WIDTH//2 - err.get_width()//2, 630))
 
         pygame.display.flip()
@@ -208,11 +270,14 @@ def start_screen():
 
                 # --- RETURNING PLAYER ---
                 if hover_existing:
-                    name = text_input("Geef je spelersnaam:")
-                    if player_exists(name):
-                        return load_player(name)
-                    else:
-                        continue
+                    # name = text_input("Geef je spelersnaam:")
+                    # if player_exists(name):
+                    #     return load_player(name)
+                    # else:
+                    #     continue
+                    name = existing_player_screen()
+                    stop_background_music()
+                    start_blackjack_game(name)
 
 
 start_screen()
