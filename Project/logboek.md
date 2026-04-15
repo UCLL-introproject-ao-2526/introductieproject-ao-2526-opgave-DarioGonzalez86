@@ -82,6 +82,11 @@ De functie om te kijken of een speler bestaat is er al, enkel wat de functie ter
 Ik merk dat er veel gelijkenissen zijn tussen de 2 functies, later te bekijken of dit eventueel in 1 functie kan, maar met ander input parameters. 
 
 
+## 15 april (bis)
+
+Het bestand start_screen heb ik volledig aangepakt. Bij het testen zag ik wel dat wanneer ik in het proces van een bestaande speler een naam in kleine letters geef (bijvoorbeeld tom) en de naam staat in het CSV bestand met Tom, dit door de validaties raakt (terecht, want ik gebruik lower). Maar de naam die je ingeeft, wordt ook doorgegeven aan blackjack.py, waardoor de score niet goed opgehaald wordt (omdat er geen tom in de CSV staat). Dit moet ik eens zien hoe ik dit kan oplossen.
+
+
 
 
 
