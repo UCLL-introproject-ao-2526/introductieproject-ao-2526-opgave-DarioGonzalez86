@@ -1,0 +1,23 @@
+Reflectie bij video https://www.youtube.com/watch?v=vcFBwt1nu2U (The Worst Programming Language Ever by Mark Rendle)
+
+Tijdens de NDC Conference (event voor software developers) van Oslo in 2021 geeft Mark Rendle een presentatie over de slechtste programmeertaal ooit. De presentatie probeert een nieuwe programmeertaal, genaamd BS, te ontwerpen die gebaseerd is op de slechtste eigenschappen van bestaande programmeertalen, dit op een humoristische manier. 
+
+Hij begint zijn presentatie met een aantal voorbeelden uit de geschiedenis van programmeertalen. De eerste taal die aan de beurt komt, is COBOL. Volgens Rendle werd COBOL ontworpen door een comité zonder ooit het woord “nee” te gebruiken tegen slechte ideeën. Zelfs een simpele “Hello World” is al complex. 
+
+Het volgend voorbeeld gaat over APL. Hoe simpel de naam van de taal is, A  Programming Language, zo ingewikkeld de taal zelf is. Je moet zelfs een speciaal ontworpen toetenbord kopen voor de verschillende tekens die gebruikt worden.
+Het laatste voorbeeld is Intercal, een parodietaal, waar hij de voorbeelden van beleefdheid (je moet “please” gebruiken, maar ook weer niet te  veel) in de onlogische flow (“come from” in plaats van “go to”). 
+
+Daarna start hij met het beschrijven van zijn eigen taal waar de meest frustrerende eigenschappen van verschillende talen worden verwerkt. Een aantal voorbeelden zijn:
+-	White spaces uit Python: tabs en spaties door elkaar verplichten.
+-	Unless uit Ruby: de enige vorm van conditionele logica (geen if-statements). 
+-	Handmatige geheugenbeheer: zelfs variabelen moeten worden verwijderd na een return.
+-	Loops gebaseerd op go to, maar naar lijnnummers in stappen van 42: ze moeten als je code toevoegt, moet je al deze go to’s aanpassen.
+-	Gebruik van UTF-256
+
+De presentatie eindigt met de vraag naar het publiek toe of er dingen zijn die toegevoegd moeten worden. Er worden een aantal voorbeelden gegeven zoals het gebruik van een “;” na elke lijn (uit Matlab) of het toevoegen van een break na elke scope. 
+
+
+De presentatie vond ik geslaagd. Rendle gebruikt humor om echte problemen in verschillende programmeertalen bloot te leggen. Omdat ik in mijn eerste jaar zit, ben ik nog niet vertrouwd met het grootste deel van de vermelde talen, maar bijvoorbeeld de type coercion in JavaScript is iets wat ik wel herken vanuit de OPO Front-End. Dit zorgde vaak voor bugs die moeilijk te debuggen waren. Het gebruik van whitespaces, hoewel hij er sterk mee overdreven heeft in BS, vind ik dan wel goed voor de leesbaarheid van de code. 
+
+
+Ik ben een aantal video’s gestart, maar dit is eigenlijk de enige video die ik tot het einde heb uitgekeken. De presentatie zat goed in elkaar, Rendle is een vlotte spreker en bracht het onderwerp op een luchtige manier, dat het zelfs voor een leek interessant blijft. 
