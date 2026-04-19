@@ -1,1 +1,1 @@
-ALT+Arrow back
+SHIFT+LEFT

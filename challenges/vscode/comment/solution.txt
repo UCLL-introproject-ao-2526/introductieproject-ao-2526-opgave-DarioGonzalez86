@@ -1,1 +1,1 @@
-CTRL+K CTRL+C
+CTRL+/
