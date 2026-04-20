@@ -52,23 +52,12 @@ def start_blackjack_game(name):
     font = pygame.font.Font("Assets/Fonts/DejaVuSans.ttf", 44)
     smaller_font = pygame.font.Font("Assets/Fonts/DejaVuSans.ttf", 36)
 
-    # standaardkleuren, herbekijken zodra nieuwe kleuren toegevoegd zijn:
-    white = (255, 255, 255)
-    black = (0, 0, 0)
-    gray = (180, 180, 180)
-    # green = (0, 200, 0)
-    blue = (0, 120, 255)
-
     #  kleuren via adobe colorpalette op basis van achtergrond
     darkblue = (22, 45, 115)
-    green = (45, 115, 62)
     darkgreen = (25, 64, 35)
     yellow = (242, 192, 99)
     red = (217, 7, 7)
-
     background = pygame.image.load("Assets/Images/blackjack.png")
-
-    green = (45, 115, 62)
     active = False
     # win, loss, draw/push
     records = [0, 0, 0]
@@ -138,11 +127,6 @@ def start_blackjack_game(name):
             screen.blit(text_dealer, (x2 + (w2 - text_dealer.get_width()) // 2,
                                       y2 + (h2 - text_dealer.get_height()) // 2))
 
-    # screen.blit(font.render(f'Score: {player}', True, 'white'), (350, 400))
-    # if reveal_dealer:
-    #     screen.blit(font.render(
-    #         f'Score: {dealer}', True, 'white'), (350, 100))
-
     # draw cards visually onto screen
 
     def draw_cards(player, dealer, reveal):
@@ -188,7 +172,6 @@ def start_blackjack_game(name):
                     70 + (70 * i), 160 + (5 * i), 120, 220], 5, 5)
 
     # pass in player or dealer hand and get best score possible
-
     def calculate_score(hand):
         # calculate hand score fresh every time, check how many aces we have
         hand_score = 0
@@ -213,20 +196,11 @@ def start_blackjack_game(name):
         return hand_score
 
     # draw game conditions and buttons
-
     def draw_game(act, record, result, name):
         button_list = []
         player_name = name
         # initially on startup (not active) only option is to deal new hand
         if not act:
-            # logica oude knop
-            # deal = pygame.draw.rect(screen, 'white', [150, 20, 300, 100], 0, 5)
-            # pygame.draw.rect(screen, 'green', [150, 20, 300, 100], 3, 5)
-            # deal_text = font.render('DEAL HAND', True, 'black')
-            # screen.blit(deal_text, (165, 50))
-            # button_list.append(deal)
-
-            # logica nieuwe knop:
             mouse = pygame.mouse.get_pos()
             deal = pygame.Rect(618, 80, 300, 100)
             hover_deal = deal.collidepoint(mouse)
@@ -235,23 +209,6 @@ def start_blackjack_game(name):
 
         # once game started, shot hit and stand buttons and win/loss records
         else:
-            # logica oude knoppen hit & stand
-            # hit = pygame.draw.rect(screen, 'white', [0, 700, 300, 100], 0, 5)
-            # pygame.draw.rect(screen, 'green', [0, 700, 300, 100], 3, 5)
-            # hit_text = font.render('HIT ME', True, 'black')
-            # screen.blit(hit_text, (55, 735))
-            # button_list.append(hit)
-            # stand = pygame.draw.rect(
-            #     screen, 'white', [300, 700, 300, 100], 0, 5)
-            # pygame.draw.rect(screen, 'green', [300, 700, 300, 100], 3, 5)
-            # stand_text = font.render('STAND', True, 'black')
-            # screen.blit(stand_text, (355, 735))
-            # button_list.append(stand)
-            # score_text = smaller_font.render(
-            #     f'Wins: {record[0]}   Losses: {record[1]}   Draws: {record[2]}', True, 'white')
-            # screen.blit(score_text, (15, 840))
-
-            # logica nieuwe knoopen hit & stand
             mouse = pygame.mouse.get_pos()
             hit = pygame.Rect(10, 700, 300, 100)
             hover_hit = hit.collidepoint(mouse)
@@ -276,17 +233,6 @@ def start_blackjack_game(name):
 
         # if there is an outcome for the hand that was played, display a restart button and tell user what happened
         if result != 0:
-            # oude logica voor new hand knop
-            # screen.blit(font.render(results[result], True, 'white'), (15, 25))
-            # deal = pygame.draw.rect(
-            #     screen, 'white', [150, 220, 300, 100], 0, 5)
-            # pygame.draw.rect(screen, 'green', [150, 220, 300, 100], 3, 5)
-            # pygame.draw.rect(screen, 'black', [153, 223, 294, 94], 3, 5)
-            # deal_text = font.render('NEW HAND', True, 'black')
-            # screen.blit(deal_text, (165, 250))
-            # button_list.append(deal)
-
-            # toon resultaat:
             text_result = font.render(results[result], True, red)
             text_width = text_result.get_width()
             text_height = text_result.get_height()
@@ -297,7 +243,6 @@ def start_blackjack_game(name):
                 screen, yellow, (x, 500, text_width, text_height), border_radius=10)
             screen.blit(text_result, (x, 500))
 
-            # screen.blit(font.render(results[result], True, 'white'), (15, 25))
             mouse = pygame.mouse.get_pos()
             new_hand = pygame.Rect(150, 220, 300, 100)
             hover_new = new_hand.collidepoint(mouse)
@@ -307,7 +252,6 @@ def start_blackjack_game(name):
         return button_list
 
     # check endgame conditions function
-
     def check_endgame(hand_act, deal_score, play_score, result, totals, add):
         # check end game scenarios is player has stood, busted or blackjacked
         # result 1- player bust, 2-win, 3-loss, 4-push
@@ -369,7 +313,6 @@ def start_blackjack_game(name):
                         outcome = 0
                         hand_active = True
                         reveal_dealer = False
-                        outcome = 0
                         add_score = True
                 else:
                     # if player can hit, allow them to draw a card
@@ -401,7 +344,7 @@ def start_blackjack_game(name):
         outcome, records, add_score = check_endgame(
             hand_active, dealer_score, player_score, outcome, records, add_score)
 
-        # Update CSV wanneer een hand is afgelopen
+        # Update CSV when hand is finished
         if outcome != 0 and not add_score:
             players[name]["Win"] = records[0]
             players[name]["Lose"] = records[1]

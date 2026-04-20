@@ -87,6 +87,13 @@ Ik merk dat er veel gelijkenissen zijn tussen de 2 functies, later te bekijken o
 Het bestand start_screen heb ik volledig aangepakt. Bij het testen zag ik wel dat wanneer ik in het proces van een bestaande speler een naam in kleine letters geef (bijvoorbeeld tom) en de naam staat in het CSV bestand met Tom, dit door de validaties raakt (terecht, want ik gebruik lower). Maar de naam die je ingeeft, wordt ook doorgegeven aan blackjack.py, waardoor de score niet goed opgehaald wordt (omdat er geen tom maar Tom in de CSV staat). Dit moet ik eens zien hoe ik dit kan oplossen.
 
 
+## 20 april
+
+De easy way zou zijn dat ik de controle van lower() weg laat natuurlijk, en de controle case-sensitive maak. Maar dan heb je zowel "Tom" als "tom" als mogelijke spelers. Een andere oplossing zou zijn dat ik de naam van de csv doorgeef als naam in plaats van de naam van het inputveld. Een 3de oplossing is gebruik maken van mijn class Player. Dit was het eerste wat ik gemaakt had, maar een beetje genegeerd heb achteraf. Dus ik ben voor deze oplossing gegaan.Ik heb de klasse wel lichtjes moeten aanpassen zodat ik de code minimaal moest aanpassen. 
+
+Verder heb ik ook alles in het Engels gezet deze keer. De code van de tutorial, daar waren de comments en functies in het Engels, in mijn player class bestand in het Nederlands. 
+
+
 
 
 

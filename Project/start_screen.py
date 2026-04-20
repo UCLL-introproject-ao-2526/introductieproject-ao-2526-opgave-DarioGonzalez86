@@ -1,14 +1,12 @@
 import pygame
 import sys
-import csv
-import os
 from blackjack import start_blackjack_game
+from players import check_player, save_player, get_correct_player_name
 
 pygame.init()
 pygame.mixer.init()
 
 # Variables, constants, globals
-CSV_FILE = "players.csv"
 WIDTH, HEIGHT = 1536, 1024
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Pygame Blackjack!')
@@ -30,32 +28,22 @@ except:
     BACKGROUND = None
 
 
-# CSV functions
-
+# Check and add player via class Player
 def player_exists(name):
-    if not os.path.exists(CSV_FILE):
+    if check_player(name):
         return False
-
-    with open(CSV_FILE, "r", newline="", encoding="utf-8") as f:
-        reader = csv.reader(f)
-        for row in reader:
-            if row and row[0].lower() == name.lower():
-                return True
-    return False
+    return True
 
 
 def add_player(name):
-    with open(CSV_FILE, "a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow([name, 0, 0, 0])  # win, lose, draw
+    save_player(name)
 
 
 #  Background music
-
 def start_background_music():
     pygame.mixer.music.load("Assets/Music/AceOfSpades.mp3")
     pygame.mixer.music.set_volume(0.4)
-    pygame.mixer.music.play(0)  # -1 = infinite loop,  0 = geen loop
+    pygame.mixer.music.play(0)  # -1 = infinite loop,  0 = no loop
 
 
 def stop_background_music():
@@ -63,7 +51,6 @@ def stop_background_music():
 
 
 # Help functions
-
 def draw_background():
     if BACKGROUND:
         screen.blit(BACKGROUND, (0, 0))
@@ -83,7 +70,6 @@ def draw_button(text, rect, hover):
 
 
 # Input screen, for both new and existing player
-
 def text_input_screen(title_text, validator):
     input_text = ""
     error_message = ""
@@ -113,7 +99,7 @@ def text_input_screen(title_text, validator):
 
         pygame.display.flip()
 
-        # EVENTS
+        # Events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -132,13 +118,12 @@ def text_input_screen(title_text, validator):
                 if hover:
                     valid, msg = validator(input_text.strip())
                     if valid:
-                        return input_text.strip()
+                        return msg if msg else input_text.strip()
                     else:
                         error_message = msg
 
 
-# Validate players names
-
+# Validate players names for new and existing players
 def validate_new_player(name):
     if not name:
         return False, "Name cannot be empty"
@@ -149,15 +134,13 @@ def validate_new_player(name):
 
 
 def validate_existing_player(name):
-    if not name:
-        return False, "Name cannot be empty"
-    if not player_exists(name):
-        return False, "Player doesn't exist!"
-    return True, None
+    correct_name = get_correct_player_name(name)
+    if correct_name is None:
+        return False, "Player does not exist!"
+    return True, correct_name
 
 
 #  Start screen - main program
-
 def start_screen():
     start_background_music()
 
@@ -188,7 +171,7 @@ def start_screen():
                     stop_background_music()
                     start_blackjack_game(name)
 
-                # choose existing player:
+                # Choose existing player:
                 if hover_existing:
                     name = text_input_screen(
                         "Enter your name", validate_existing_player)
