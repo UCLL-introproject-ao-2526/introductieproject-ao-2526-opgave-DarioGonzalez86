@@ -94,6 +94,17 @@ De easy way zou zijn dat ik de controle van lower() weg laat natuurlijk, en de c
 Verder heb ik ook alles in het Engels gezet deze keer. De code van de tutorial, daar waren de comments en functies in het Engels, in mijn player class bestand in het Nederlands. 
 
 
+## 27 april
+
+Vandaag een kleine aanpassing doorgevoerd in de code van het start scherm. De functies die de naam van de speler controleerde en toevoegde, stond er 2x tussen. Dit kon iets eenvoudiger gedaan worden. 
+
+In het bestand van blackjack.py zag ik ook dat er code stond om spelers op te halen uit en toe te voegen aan de CSV. Dit lijkt me ook meer op zijn plaats in het bestand van players.py waar de Class Player beheerd wordt. Dit is de volgende aanpassing die ik nog ga doen, samen met de code van blackjack.py wat nog fatsoeneren. En dan zit ik rond de 20u en ga ik dit afronden en doorsturen naar de lector voor feedback. 
+
+
+
+
+
+
 
 
 

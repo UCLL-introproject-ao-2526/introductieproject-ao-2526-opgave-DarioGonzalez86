@@ -28,17 +28,6 @@ except:
     BACKGROUND = None
 
 
-# Check and add player via class Player
-def player_exists(name):
-    if check_player(name):
-        return False
-    return True
-
-
-def add_player(name):
-    save_player(name)
-
-
 #  Background music
 def start_background_music():
     pygame.mixer.music.load("Assets/Music/AceOfSpades.mp3")
@@ -123,13 +112,13 @@ def text_input_screen(title_text, validator):
                         error_message = msg
 
 
-# Validate players names for new and existing players
+# Validate players names for new and existing players via Class Player
 def validate_new_player(name):
     if not name:
         return False, "Name cannot be empty"
-    if player_exists(name):
+    if check_player(name):
         return False, "Player already exists!"
-    add_player(name)
+    save_player(name)
     return True, None
 
 
