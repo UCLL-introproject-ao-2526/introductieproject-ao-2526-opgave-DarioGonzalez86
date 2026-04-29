@@ -2,37 +2,8 @@
 import copy
 import random
 import pygame
-import csv
-import os
 import sys
-
-
-def load_players_csv(path="players.csv"):
-    players = {}
-    if not os.path.exists(path):
-        return players
-    with open(path, newline="", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            players[row["Name"]] = {
-                "Win": int(row["Win"]),
-                "Lose": int(row["Lose"]),
-                "Draw": int(row["Draw"])
-            }
-    return players
-
-
-def save_players_csv(players, path="players.csv"):
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["Name", "Win", "Lose", "Draw"])
-        writer.writeheader()
-        for name, stats in players.items():
-            writer.writerow({
-                "Name": name,
-                "Win": stats["Win"],
-                "Lose": stats["Lose"],
-                "Draw": stats["Draw"]
-            })
+from players import load_players_csv, save_players_csv
 
 
 def start_blackjack_game(name):
@@ -52,13 +23,14 @@ def start_blackjack_game(name):
     font = pygame.font.Font("Assets/Fonts/DejaVuSans.ttf", 44)
     smaller_font = pygame.font.Font("Assets/Fonts/DejaVuSans.ttf", 36)
 
-    #  kleuren via adobe colorpalette op basis van achtergrond
+    #  Colors
     darkblue = (22, 45, 115)
     darkgreen = (25, 64, 35)
     yellow = (242, 192, 99)
     red = (217, 7, 7)
     background = pygame.image.load("Assets/Images/blackjack.png")
     active = False
+
     # win, loss, draw/push
     records = [0, 0, 0]
     player_score = 0
@@ -73,7 +45,7 @@ def start_blackjack_game(name):
     results = ['', f'{name} BUSTED o_O',
                f'{name} WINS! :)', 'DEALER WINS :(', 'TIE GAME...']
 
-    # spelers ophalen en scores te kunnen updaten later.
+    # Load players in a dictionary to update file later with new scores
     players = load_players_csv()
     if name not in players:
         players[name] = {"Win": 0, "Lose": 0, "Draw": 0}
@@ -344,7 +316,7 @@ def start_blackjack_game(name):
         outcome, records, add_score = check_endgame(
             hand_active, dealer_score, player_score, outcome, records, add_score)
 
-        # Update CSV when hand is finished
+        # Update CSV when hand is finished with the dictionary
         if outcome != 0 and not add_score:
             players[name]["Win"] = records[0]
             players[name]["Lose"] = records[1]

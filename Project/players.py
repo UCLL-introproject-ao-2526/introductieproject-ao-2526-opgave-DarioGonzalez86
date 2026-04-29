@@ -1,7 +1,39 @@
 import csv
+import os
 
+CSV_FILE = "players.csv"
+
+
+def load_players_csv(path=CSV_FILE):
+    players = {}
+    if not os.path.exists(path):
+        return players
+    with open(path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            players[row["Name"]] = {
+                "Win": int(row["Win"]),
+                "Lose": int(row["Lose"]),
+                "Draw": int(row["Draw"])
+            }
+    return players
+
+
+def save_players_csv(players, path=CSV_FILE):
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=["Name", "Win", "Lose", "Draw"])
+        writer.writeheader()
+        for name, stats in players.items():
+            writer.writerow({
+                "Name": name,
+                "Win": stats["Win"],
+                "Lose": stats["Lose"],
+                "Draw": stats["Draw"]
+            })
 
 # Setup of player class
+
+
 class Player:
     def __init__(self, name):
         self.name = name
@@ -44,33 +76,25 @@ class Player:
 
 # Functions to check and store player information in CSV file
 def save_player(player):
-    with open("players.csv", "a", newline="", encoding="utf-8") as output_file:
+    with open(CSV_FILE, "a", newline="", encoding="utf-8") as output_file:
         writer = csv.writer(output_file)
         writer.writerow([player, 0, 0, 0])  # win, lose, draw
 
 
 def check_player(player):
-    with open("players.csv", "r", newline="", encoding="utf-8") as input_file:
+    with open(CSV_FILE, "r", newline="", encoding="utf-8") as input_file:
         reader = csv.reader(input_file)
         for row in reader:
             name = row[0].strip().lower()
             if name == player.strip().lower():
-                return False
-    return True
+                return True
+    return False
 
 
 def get_correct_player_name(player):
-    with open("players.csv", "r", newline="", encoding="utf-8") as f:
+    with open(CSV_FILE, "r", newline="", encoding="utf-8") as f:
         reader = csv.reader(f)
         for row in reader:
             if row and row[0].strip().lower() == player.strip().lower():
                 return row[0]
     return None
-
-
-def check_and_save_player(player):
-    if check_player(player):
-        save_player(player)
-    else:
-        raise ValueError(
-            f"The player with name \"{player.name}\" already exists!")

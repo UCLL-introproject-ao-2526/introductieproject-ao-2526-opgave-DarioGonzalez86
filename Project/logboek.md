@@ -101,6 +101,14 @@ Vandaag een kleine aanpassing doorgevoerd in de code van het start scherm. De fu
 In het bestand van blackjack.py zag ik ook dat er code stond om spelers op te halen uit en toe te voegen aan de CSV. Dit lijkt me ook meer op zijn plaats in het bestand van players.py waar de Class Player beheerd wordt. Dit is de volgende aanpassing die ik nog ga doen, samen met de code van blackjack.py wat nog fatsoeneren. En dan zit ik rond de 20u en ga ik dit afronden en doorsturen naar de lector voor feedback. 
 
 
+## 29 april
+
+De code om spelers op te halen en toe te voegen aan de CSV heb ik verplaatst naar players.py. 
+In de code van players.py stond een functie die nergens aangeroepen werd, dus deze ook verwijderd. 
+
+Vandaag ga ik ook feedback vragen aan de lector.
+
+
 
 
 

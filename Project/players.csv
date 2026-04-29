@@ -1,5 +1,5 @@
 Name,Win,Lose,Draw
-Dario,7,13,0
+Dario,10,25,2
 Joey,1,8,3
 Carlo,2,0,0
 Roy,1,0,0
@@ -14,3 +14,4 @@ test12,0,1,0
 dombo,0,0,0
 dario2,1,1,0
 BramS,2,3,0
+dario24,2,1,1

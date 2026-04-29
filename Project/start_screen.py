@@ -117,7 +117,7 @@ def validate_new_player(name):
     if not name:
         return False, "Name cannot be empty"
     if check_player(name):
-        return False, "Player already exists!"
+        return False, f'Player with name "{name}" already exists!'
     save_player(name)
     return True, None
 
@@ -125,7 +125,7 @@ def validate_new_player(name):
 def validate_existing_player(name):
     correct_name = get_correct_player_name(name)
     if correct_name is None:
-        return False, "Player does not exist!"
+        return False, f'Player with name "{name}" does not exist!'
     return True, correct_name
 
 
