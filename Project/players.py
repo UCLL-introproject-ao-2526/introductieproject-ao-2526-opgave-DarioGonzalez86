@@ -1,6 +1,8 @@
 import csv
 import os
 
+
+# [dn] Je file heet players.py. Het is normaal altijd enkelvoudig je dingen te benoemen, dus 'player.py". 
 CSV_FILE = "players.csv"
 
 
@@ -29,6 +31,7 @@ def save_players_csv(players, path=CSV_FILE):
                 "Win": stats["Win"],
                 "Lose": stats["Lose"],
                 "Draw": stats["Draw"]
+                #[dn] je hebt best wat duplicatie met de strings, bvb "Draw". Je kan best DRAW_STRING = "Draw" doen, dat is wat veiliger
             })
 
 # Setup of player class
@@ -39,7 +42,7 @@ class Player:
         self.name = name
         self.win = 0
         self.lose = 0
-        self.draw = 0
+        self.draw = 0 #niet meteen duidelijk wat de variabelen zijn. amount_of_draws?
 
     @property
     def name(self):
