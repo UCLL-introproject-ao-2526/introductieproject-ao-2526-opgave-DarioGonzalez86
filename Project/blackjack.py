@@ -5,7 +5,7 @@ import pygame
 import sys
 from players import load_players_csv, save_players_csv
 
-
+#[dn] alles zit in start_blackjack_game, dus niet zeker waarom het 'start' is?
 def start_blackjack_game(name):
 
     pygame.init()
@@ -294,6 +294,8 @@ def start_blackjack_game(name):
                     elif buttons[1].collidepoint(event.pos) and not reveal_dealer:
                         reveal_dealer = True
                         hand_active = False
+                    # [dn] niet specifiek hier, maar we zitten hier wel echt diep in if's and while's 
+                    # probeer het wat op te splitsen in methods, of een andere manier om niet zoveel te nesten
                     elif len(buttons) == 3:
                         if buttons[2].collidepoint(event.pos):
                             active = True
