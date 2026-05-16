@@ -109,6 +109,16 @@ In de code van players.py stond een functie die nergens aangeroepen werd, dus de
 Vandaag ga ik ook feedback vragen aan de lector.
 
 
+## 16 mei
+
+Een dag of 2 na mijn vraag heb ik feedback ontvangen van de lector. Volgende aanpassingen heb ik gedaan n.a.v. de feeback:
+- Verwijderen van map "oude bestanden". Ik was nog niet echt vertrouwd met git voor deze opleiding. Dus het leek me inderdaad logisch om deze map niet meer actief bij te houden.
+- Geen aparte file voor player en start_screen, de 3 bestanden zitten nog ruim onder de 1000 lijnen aan code. Er kwam wel wat bij kijken, sommige variabelen (fonts, kleuren, ...) zaten zowel in de blackjack file als in de start_screen file.+
+- Opmerking rond duplicatie in strings: is inderdaad een goed idee om bepaalde strings op te nemen als constante. 
+- Bij nader inzien wordt de class Player nergens gebruikt, dus deze code heb ik dan ook volledig eruit gehaald (de speler wordt rechtstreeks naar de CSV geschreven en van daaruit ook gelezen.)
+- Er waren 2 functies met de naam van save_player (save_players_csv). Dit kon verwarrend zijn, de eerste functie voegt een nieuwe speler toe. Heb de naam dan ook gewijzigd naar add_new_player. 
+- De opmerking rond "start_blackjack_game" begreep ik niet. Alles in deze functie heeft te maken met het spel blackjack zelf, terwijl we ervoor bezig zijn met het nieuwe scherm waar je een naam kan kiezen. 
+
 
 
 

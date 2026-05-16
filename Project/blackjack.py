@@ -3,34 +3,248 @@ import copy
 import random
 import pygame
 import sys
-from players import load_players_csv, save_players_csv
+import csv
+import os
 
-#[dn] alles zit in start_blackjack_game, dus niet zeker waarom het 'start' is?
+pygame.init()
+pygame.mixer.init()
+
+# Variables, constants, globals
+WIDTH, HEIGHT = 1536, 1024
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption('Pygame Blackjack!')
+FONT = pygame.font.Font("Assets/Fonts/DejaVuSans.ttf", 42)
+SMALLER_FONT = pygame.font.Font("Assets/Fonts/DejaVuSans.ttf", 34)
+CSV_FILE = "players.csv"
+WIN_STRING = "Win"
+LOSE_STRING = "Lose"
+DRAW_STRING = "Draw"
+
+cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+suits = ['♠', '♥', '♦', '♣']
+one_deck = [value + suit for value in cards for suit in suits]
+decks = 4
+fps = 60
+timer = pygame.time.Clock()
+
+# Colors (via Adobe Color Palette with background as template)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+DARKBLUE = (22, 45, 115)
+DARKGREEN = (25, 64, 35)
+YELLOW = (242, 192, 99)
+RED = (217, 7, 7)
+
+# Background image
+try:
+    BACKGROUND = pygame.image.load("Assets/Images/blackjack.png")
+except:
+    BACKGROUND = None
+
+
+# Help functions to load and save players from/to CSV file
+def load_players_csv(path=CSV_FILE):
+    players = {}
+    if not os.path.exists(path):
+        return players
+    with open(path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            players[row["Name"]] = {
+                WIN_STRING: int(row[WIN_STRING]),
+                LOSE_STRING: int(row[LOSE_STRING]),
+                DRAW_STRING: int(row[DRAW_STRING])
+            }
+    return players
+
+
+def save_players_csv(players, path=CSV_FILE):
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(
+            f, fieldnames=["Name", WIN_STRING, LOSE_STRING, DRAW_STRING])
+        writer.writeheader()
+        for name, stats in players.items():
+            writer.writerow({
+                "Name": name,
+                WIN_STRING: stats[WIN_STRING],
+                LOSE_STRING: stats[LOSE_STRING],
+                DRAW_STRING: stats[DRAW_STRING]
+            })
+
+
+# Functions to add a new player in the csv file
+def add_new_player(player):
+    with open(CSV_FILE, "a", newline="", encoding="utf-8") as output_file:
+        writer = csv.writer(output_file)
+        writer.writerow([player, 0, 0, 0])  # win, lose, draw
+
+# Functions to check if a player exists in  the csv file
+
+
+def check_player(player):
+    with open(CSV_FILE, "r", newline="", encoding="utf-8") as input_file:
+        reader = csv.reader(input_file)
+        for row in reader:
+            name = row[0].strip().lower()
+            if name == player.strip().lower():
+                return True
+    return False
+
+# Function to get the correct name of the player (to show correct statistics if not the correct upper/lower case was used)
+
+
+def get_correct_player_name(player):
+    with open(CSV_FILE, "r", newline="", encoding="utf-8") as f:
+        reader = csv.reader(f)
+        for row in reader:
+            if row and row[0].strip().lower() == player.strip().lower():
+                return row[0]
+    return None
+
+
+#  Background music
+def start_background_music():
+    pygame.mixer.music.load("Assets/Music/AceOfSpades.mp3")
+    pygame.mixer.music.set_volume(0.4)
+    pygame.mixer.music.play(0)  # -1 = infinite loop,  0 = no loop
+
+
+def stop_background_music():
+    pygame.mixer.music.stop()
+
+
+# Help functions
+def draw_background():
+    if BACKGROUND:
+        screen.blit(BACKGROUND, (0, 0))
+    else:
+        screen.fill(BLACK)
+
+
+def draw_button(text, rect, hover):
+    color = DARKBLUE if hover else DARKGREEN
+    pygame.draw.rect(screen, color, rect, border_radius=10)
+
+    label = SMALLER_FONT.render(text, True, YELLOW)
+    screen.blit(label, (
+        rect.x + (rect.width - label.get_width()) // 2,
+        rect.y + (rect.height - label.get_height()) // 2
+    ))
+
+
+# Input screen, for both new and existing player
+def text_input_screen(title_text, validator):
+    input_text = ""
+    error_message = ""
+    active = True
+
+    while active:
+        draw_background()
+
+        # Title
+        title = FONT.render(title_text, True, YELLOW)
+        screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 80))
+
+        # Input box
+        pygame.draw.rect(screen, WHITE, (568, 500, 400, 50), border_radius=8)
+        label = SMALLER_FONT.render(input_text, True, BLACK)
+        screen.blit(label, (568, 500))  # 578,505
+
+        # Confirm button
+        confirm_rect = pygame.Rect(618, 570, 300, 60)
+        hover = confirm_rect.collidepoint(pygame.mouse.get_pos())
+        draw_button("Confirm", confirm_rect, hover)
+
+        # Error message
+        if error_message:
+            err = SMALLER_FONT.render(error_message, True, RED)
+            screen.blit(err, (WIDTH // 2 - err.get_width() // 2, 640))
+
+        pygame.display.flip()
+
+        # Events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    input_text = input_text[:-1]
+                elif event.key == pygame.K_RETURN:
+                    pass
+                else:
+                    if len(input_text) < 15:
+                        input_text += event.unicode
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if hover:
+                    valid, msg = validator(input_text.strip())
+                    if valid:
+                        return msg if msg else input_text.strip()
+                    else:
+                        error_message = msg
+
+
+# Validate players names for new and existing players via Class Player
+def validate_new_player(name):
+    if not name:
+        return False, "Name cannot be empty"
+    if check_player(name):
+        return False, f'Player with name "{name}" already exists!'
+    add_new_player(name)
+    return True, None
+
+
+def validate_existing_player(name):
+    correct_name = get_correct_player_name(name)
+    if correct_name is None:
+        return False, f'Player with name "{name}" does not exist!'
+    return True, correct_name
+
+
+#  Start screen - main program
+def start_screen():
+    start_background_music()
+
+    while True:
+        draw_background()
+        mouse = pygame.mouse.get_pos()
+
+        btn_new = pygame.Rect(443, 512, 300, 70)
+        btn_existing = pygame.Rect(793, 512, 300, 70)
+        hover_new = btn_new.collidepoint(mouse)
+        hover_existing = btn_existing.collidepoint(mouse)
+
+        draw_button("New player", btn_new, hover_new)
+        draw_button("Returning player", btn_existing, hover_existing)
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                # Add new player:
+                if hover_new:
+                    name = text_input_screen(
+                        "Add New Player", validate_new_player)
+                    stop_background_music()
+                    start_blackjack_game(name)
+
+                # Choose existing player:
+                if hover_existing:
+                    name = text_input_screen(
+                        "Enter your name", validate_existing_player)
+                    stop_background_music()
+                    start_blackjack_game(name)
+
+
+# [dn] alles zit in start_blackjack_game, dus niet zeker waarom het 'start' is?
 def start_blackjack_game(name):
-
-    pygame.init()
-    # game variables
-    cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-    suits = ['♠', '♥', '♦', '♣']
-    one_deck = [value + suit for value in cards for suit in suits]
-    decks = 4
-    WIDTH = 1536
-    HEIGHT = 1024
-    screen = pygame.display.set_mode([WIDTH, HEIGHT])
-    pygame.display.set_caption('Pygame Blackjack!')
-    fps = 60
-    timer = pygame.time.Clock()
-    font = pygame.font.Font("Assets/Fonts/DejaVuSans.ttf", 44)
-    smaller_font = pygame.font.Font("Assets/Fonts/DejaVuSans.ttf", 36)
-
-    #  Colors
-    darkblue = (22, 45, 115)
-    darkgreen = (25, 64, 35)
-    yellow = (242, 192, 99)
-    red = (217, 7, 7)
-    background = pygame.image.load("Assets/Images/blackjack.png")
     active = False
-
     # win, loss, draw/push
     records = [0, 0, 0]
     player_score = 0
@@ -48,19 +262,19 @@ def start_blackjack_game(name):
     # Load players in a dictionary to update file later with new scores
     players = load_players_csv()
     if name not in players:
-        players[name] = {"Win": 0, "Lose": 0, "Draw": 0}
+        players[name] = {WIN_STRING: 0, LOSE_STRING: 0, DRAW_STRING: 0}
 
     records = [
-        players[name]["Win"],
-        players[name]["Lose"],
-        players[name]["Draw"]
+        players[name][WIN_STRING],
+        players[name][LOSE_STRING],
+        players[name][DRAW_STRING]
     ]
 
     # draw buttons:
     def draw_button(text, x, y, w, h, hover):
-        color = darkblue if hover else darkgreen
+        color = DARKBLUE if hover else DARKGREEN
         pygame.draw.rect(screen, color, (x, y, w, h), border_radius=10)
-        label = smaller_font.render(text, True, yellow)
+        label = SMALLER_FONT.render(text, True, YELLOW)
         screen.blit(label, (x + (w - label.get_width()) // 2,
                             y + (h - label.get_height()) // 2))
 
@@ -76,25 +290,25 @@ def start_blackjack_game(name):
 
     def draw_scores(player, dealer):
         # score speler
-        text_player = smaller_font.render(f"Score: {player}", True, darkgreen)
+        text_player = SMALLER_FONT.render(f"Score: {player}", True, DARKGREEN)
         w = text_player.get_width()
         h = text_player.get_height()
         x, y = 350, 400
 
-        pygame.draw.rect(screen, yellow, (x, y, w, h),
+        pygame.draw.rect(screen, YELLOW, (x, y, w, h),
                          border_radius=10)
         screen.blit(text_player, (x + (w - text_player.get_width()) // 2,
                                   y + (h - text_player.get_height()) // 2))
 
         # score dealer
         if reveal_dealer:
-            text_dealer = smaller_font.render(
-                f"Score: {dealer}", True, darkgreen)
+            text_dealer = SMALLER_FONT.render(
+                f"Score: {dealer}", True, DARKGREEN)
             w2 = text_dealer.get_width()
             h2 = text_dealer.get_height()
             x2, y2 = 350, 120
 
-            pygame.draw.rect(screen, yellow,
+            pygame.draw.rect(screen, YELLOW,
                              (x2, y2, w2, h2), border_radius=10)
             screen.blit(text_dealer, (x2 + (w2 - text_dealer.get_width()) // 2,
                                       y2 + (h2 - text_dealer.get_height()) // 2))
@@ -105,42 +319,42 @@ def start_blackjack_game(name):
         for i in range(len(player)):
             value = player[i][:-1]
             suit = player[i][-1]
-            color = 'red' if suit in ['♥', '♦'] else 'black'
+            color = RED if suit in ['♥', '♦'] else BLACK
             pygame.draw.rect(screen, 'white', [
                 70 + (70 * i), 460 + (5 * i), 120, 220], 0, 5)
-            screen.blit(smaller_font.render(value + suit, True,
+            screen.blit(SMALLER_FONT.render(value + suit, True,
                         color), (75 + 70 * i, 465 + 5 * i))
-            screen.blit(smaller_font.render(value + suit, True,
+            screen.blit(SMALLER_FONT.render(value + suit, True,
                         color), (75 + 70 * i, 635 + 5 * i))
-            if color == 'red':
+            if color == RED:
                 pygame.draw.rect(
-                    screen, 'red', [70 + (70 * i), 460 + (5 * i), 120, 220], 5, 5)
+                    screen, RED, [70 + (70 * i), 460 + (5 * i), 120, 220], 5, 5)
             else:
                 pygame.draw.rect(
-                    screen, 'black', [70 + (70 * i), 460 + (5 * i), 120, 220], 5, 5)
+                    screen, BLACK, [70 + (70 * i), 460 + (5 * i), 120, 220], 5, 5)
 
         # if player hasn't finished turn, dealer will hide one card
         for i in range(len(dealer)):
             value = dealer[i][:-1]
             suit = dealer[i][-1]
-            color = 'red' if suit in ['♥', '♦'] else 'black'
-            pygame.draw.rect(screen, 'white', [
+            color = RED if suit in ['♥', '♦'] else BLACK
+            pygame.draw.rect(screen, WHITE, [
                 70 + (70 * i), 160 + (5 * i), 120, 220], 0, 5)
             if i != 0 or reveal:
-                screen.blit(smaller_font.render(
+                screen.blit(SMALLER_FONT.render(
                     value + suit, True, color), (75 + 70 * i, 165 + 5 * i))
-                screen.blit(smaller_font.render(
+                screen.blit(SMALLER_FONT.render(
                     value + suit, True, color), (75 + 70 * i, 335 + 5 * i))
             else:
-                screen.blit(smaller_font.render('???', True, 'black'),
+                screen.blit(SMALLER_FONT.render('???', True, BLACK),
                             (75 + 70 * i, 165 + 5 * i))
-                screen.blit(smaller_font.render('???', True, 'black'),
+                screen.blit(SMALLER_FONT.render('???', True, BLACK),
                             (75 + 70 * i, 335 + 5 * i))
-            if color == 'red':
+            if color == RED:
                 pygame.draw.rect(
-                    screen, 'red', [70 + (70 * i), 160 + (5 * i), 120, 220], 5, 5)
+                    screen, RED, [70 + (70 * i), 160 + (5 * i), 120, 220], 5, 5)
             else:
-                pygame.draw.rect(screen, 'black', [
+                pygame.draw.rect(screen, BLACK, [
                     70 + (70 * i), 160 + (5 * i), 120, 220], 5, 5)
 
     # pass in player or dealer hand and get best score possible
@@ -191,11 +405,11 @@ def start_blackjack_game(name):
             draw_button("Stand", 350, 700, 300, 100, hover_stand)
             button_list.append(stand)
 
-            player_text = smaller_font.render(
-                f"Game history of {player_name}:", True, "white")
+            player_text = SMALLER_FONT.render(
+                f"Game history of {player_name}:", True, WHITE)
             player_text_width = player_text.get_width()
-            score_text = smaller_font.render(
-                f'Wins: {record[0]}   Losses: {record[1]}   Draws: {record[2]}', True, "white")
+            score_text = SMALLER_FONT.render(
+                f'Wins: {record[0]}   Losses: {record[1]}   Draws: {record[2]}', True, WHITE)
             score_text_width = score_text.get_width()
             screen_width = screen.get_width()
             x1 = (screen_width - player_text_width) // 2
@@ -205,14 +419,14 @@ def start_blackjack_game(name):
 
         # if there is an outcome for the hand that was played, display a restart button and tell user what happened
         if result != 0:
-            text_result = font.render(results[result], True, red)
+            text_result = FONT.render(results[result], True, RED)
             text_width = text_result.get_width()
             text_height = text_result.get_height()
             screen_width = screen.get_width()
             x = (screen_width - text_width) // 2
 
             pygame.draw.rect(
-                screen, yellow, (x, 500, text_width, text_height), border_radius=10)
+                screen, YELLOW, (x, 500, text_width, text_height), border_radius=10)
             screen.blit(text_result, (x, 500))
 
             mouse = pygame.mouse.get_pos()
@@ -251,7 +465,7 @@ def start_blackjack_game(name):
     while run:
         # run game at our framerate and fill screen with bg color
         timer.tick(fps)
-        screen.blit(background, (0, 0))
+        screen.blit(BACKGROUND, (0, 0))
         # initial deal to player and dealer
         if initial_deal:
             for i in range(2):
@@ -294,7 +508,7 @@ def start_blackjack_game(name):
                     elif buttons[1].collidepoint(event.pos) and not reveal_dealer:
                         reveal_dealer = True
                         hand_active = False
-                    # [dn] niet specifiek hier, maar we zitten hier wel echt diep in if's and while's 
+                    # [dn] niet specifiek hier, maar we zitten hier wel echt diep in if's and while's
                     # probeer het wat op te splitsen in methods, of een andere manier om niet zoveel te nesten
                     elif len(buttons) == 3:
                         if buttons[2].collidepoint(event.pos):
@@ -320,10 +534,13 @@ def start_blackjack_game(name):
 
         # Update CSV when hand is finished with the dictionary
         if outcome != 0 and not add_score:
-            players[name]["Win"] = records[0]
-            players[name]["Lose"] = records[1]
-            players[name]["Draw"] = records[2]
+            players[name][WIN_STRING] = records[0]
+            players[name][LOSE_STRING] = records[1]
+            players[name][DRAW_STRING] = records[2]
             save_players_csv(players)
 
         pygame.display.flip()
     pygame.quit()
+
+
+start_screen()
