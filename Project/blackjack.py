@@ -242,6 +242,192 @@ def start_screen():
                     start_blackjack_game(name)
 
 
+# deal cards by selecting randomly from deck, and make function for one card at a time
+def deal_cards(current_hand, current_deck):
+    card = random.randint(0, len(current_deck))
+    current_hand.append(current_deck[card - 1])
+    current_deck.pop(card - 1)
+    return current_hand, current_deck
+
+
+# pass in player or dealer hand and get best score possible
+def calculate_score(hand):
+    # calculate hand score fresh every time, check how many aces we have
+    hand_score = 0
+    aces_count = sum(1 for card in hand if card[:-1] == 'A')
+    for i in range(len(hand)):
+        card_value = hand[i][:-1]
+        # for 2,3,4,5,6,7,8,9 - just add the number to total
+        for j in range(8):
+            if card_value == cards[j]:
+                hand_score += int(card_value)
+        # for 10 and face cards, add 10
+        if card_value in ['10', 'J', 'Q', 'K']:
+            hand_score += 10
+        # for aces start by adding 11, we'll check if we need to reduce afterwards
+        elif card_value == 'A':
+            hand_score += 11
+    # determine how many aces need to be 1 instead of 11 to get under 21 if possible
+    if hand_score > 21 and aces_count > 0:
+        for i in range(aces_count):
+            if hand_score > 21:
+                hand_score -= 10
+    return hand_score
+
+
+# draw scores for player and dealer on screen
+def draw_scores(player, dealer, reveal_dealer):
+    # score player
+    text_player = SMALLER_FONT.render(f"Score: {player}", True, DARKGREEN)
+    w = text_player.get_width()
+    h = text_player.get_height()
+    x, y = 350, 400
+
+    pygame.draw.rect(screen, YELLOW, (x, y, w, h),
+                     border_radius=10)
+    screen.blit(text_player, (x + (w - text_player.get_width()) // 2,
+                              y + (h - text_player.get_height()) // 2))
+
+    # score dealer
+    if reveal_dealer:
+        text_dealer = SMALLER_FONT.render(
+            f"Score: {dealer}", True, DARKGREEN)
+        w2 = text_dealer.get_width()
+        h2 = text_dealer.get_height()
+        x2, y2 = 350, 120
+
+        pygame.draw.rect(screen, YELLOW,
+                         (x2, y2, w2, h2), border_radius=10)
+        screen.blit(text_dealer, (x2 + (w2 - text_dealer.get_width()) // 2,
+                                  y2 + (h2 - text_dealer.get_height()) // 2))
+
+# draw cards visually onto screen
+
+
+def draw_cards(player, dealer, reveal):
+    for i in range(len(player)):
+        value = player[i][:-1]
+        suit = player[i][-1]
+        color = RED if suit in ['♥', '♦'] else BLACK
+        pygame.draw.rect(screen, 'white', [
+            70 + (70 * i), 460 + (5 * i), 120, 220], 0, 5)
+        screen.blit(SMALLER_FONT.render(value + suit, True,
+                    color), (75 + 70 * i, 465 + 5 * i))
+        screen.blit(SMALLER_FONT.render(value + suit, True,
+                    color), (75 + 70 * i, 635 + 5 * i))
+        if color == RED:
+            pygame.draw.rect(
+                screen, RED, [70 + (70 * i), 460 + (5 * i), 120, 220], 5, 5)
+        else:
+            pygame.draw.rect(
+                screen, BLACK, [70 + (70 * i), 460 + (5 * i), 120, 220], 5, 5)
+
+    # if player hasn't finished turn, dealer will hide one card
+    for i in range(len(dealer)):
+        value = dealer[i][:-1]
+        suit = dealer[i][-1]
+        color = RED if suit in ['♥', '♦'] else BLACK
+        pygame.draw.rect(screen, WHITE, [
+            70 + (70 * i), 160 + (5 * i), 120, 220], 0, 5)
+        if i != 0 or reveal:
+            screen.blit(SMALLER_FONT.render(
+                value + suit, True, color), (75 + 70 * i, 165 + 5 * i))
+            screen.blit(SMALLER_FONT.render(
+                value + suit, True, color), (75 + 70 * i, 335 + 5 * i))
+        else:
+            screen.blit(SMALLER_FONT.render('???', True, BLACK),
+                        (75 + 70 * i, 165 + 5 * i))
+            screen.blit(SMALLER_FONT.render('???', True, BLACK),
+                        (75 + 70 * i, 335 + 5 * i))
+        if color == RED:
+            pygame.draw.rect(
+                screen, RED, [70 + (70 * i), 160 + (5 * i), 120, 220], 5, 5)
+        else:
+            pygame.draw.rect(screen, BLACK, [
+                70 + (70 * i), 160 + (5 * i), 120, 220], 5, 5)
+
+
+# draw game conditions and buttons
+def draw_game(act, record, results, outcome, name):
+    button_list = []
+    player_name = name
+    # initially on startup (not active) only option is to deal new hand
+    if not act:
+        mouse = pygame.mouse.get_pos()
+        deal = pygame.Rect(618, 80, 300, 100)
+        hover_deal = deal.collidepoint(mouse)
+        draw_button("Deal hand", deal, hover_deal)
+        button_list.append(deal)
+
+    # once game started, shot hit and stand buttons and win/loss records
+    else:
+        mouse = pygame.mouse.get_pos()
+        hit = pygame.Rect(10, 700, 300, 100)
+        hover_hit = hit.collidepoint(mouse)
+        draw_button("Hit", hit, hover_hit)
+        button_list.append(hit)
+        stand = pygame.Rect(350, 700, 300, 100)
+        hover_stand = stand.collidepoint(mouse)
+        draw_button("Stand", stand, hover_stand)
+        button_list.append(stand)
+
+        player_text = SMALLER_FONT.render(
+            f"Game history of {player_name}:", True, WHITE)
+        player_text_width = player_text.get_width()
+        score_text = SMALLER_FONT.render(
+            f'Wins: {record[0]}   Losses: {record[1]}   Draws: {record[2]}', True, WHITE)
+        score_text_width = score_text.get_width()
+        screen_width = screen.get_width()
+        x1 = (screen_width - player_text_width) // 2
+        x2 = (screen_width - score_text_width) // 2
+        screen.blit(player_text, (x1, 20))
+        screen.blit(score_text, (x2, 80))
+
+    # if there is an outcome for the hand that was played, display a restart button and tell user what happened
+    if outcome != 0:
+        text_result = FONT.render(results[outcome], True, RED)
+        text_width = text_result.get_width()
+        text_height = text_result.get_height()
+        screen_width = screen.get_width()
+        x = (screen_width - text_width) // 2
+
+        pygame.draw.rect(
+            screen, YELLOW, (x, 500, text_width, text_height), border_radius=10)
+        screen.blit(text_result, (x, 500))
+
+        mouse = pygame.mouse.get_pos()
+        new_hand = pygame.Rect(150, 220, 300, 100)
+        hover_new = new_hand.collidepoint(mouse)
+        draw_button("New hand", new_hand, hover_new)
+        button_list.append(new_hand)
+
+    return button_list
+
+
+# check endgame conditions function
+def check_endgame(hand_act, deal_score, play_score, result, totals, add):
+    # check end game scenarios is player has stood, busted or blackjacked
+    # result 1- player bust, 2-win, 3-loss, 4-push
+    if not hand_act and deal_score >= 17:
+        if play_score > 21:
+            result = 1
+        elif deal_score < play_score <= 21 or deal_score > 21:
+            result = 2
+        elif play_score < deal_score <= 21:
+            result = 3
+        else:
+            result = 4
+        if add:
+            if result == 1 or result == 3:
+                totals[1] += 1
+            elif result == 2:
+                totals[0] += 1
+            else:
+                totals[2] += 1
+            add = False
+    return result, totals, add
+
+
 # [dn] alles zit in start_blackjack_game, dus niet zeker waarom het 'start' is?
 def start_blackjack_game(name):
     active = False
@@ -270,196 +456,6 @@ def start_blackjack_game(name):
         players[name][DRAW_STRING]
     ]
 
-    # draw buttons:
-    def draw_button(text, x, y, w, h, hover):
-        color = DARKBLUE if hover else DARKGREEN
-        pygame.draw.rect(screen, color, (x, y, w, h), border_radius=10)
-        label = SMALLER_FONT.render(text, True, YELLOW)
-        screen.blit(label, (x + (w - label.get_width()) // 2,
-                            y + (h - label.get_height()) // 2))
-
-    # deal cards by selecting randomly from deck, and make function for one card at a time
-
-    def deal_cards(current_hand, current_deck):
-        card = random.randint(0, len(current_deck))
-        current_hand.append(current_deck[card - 1])
-        current_deck.pop(card - 1)
-        return current_hand, current_deck
-
-    # draw scores for player and dealer on screen
-
-    def draw_scores(player, dealer):
-        # score speler
-        text_player = SMALLER_FONT.render(f"Score: {player}", True, DARKGREEN)
-        w = text_player.get_width()
-        h = text_player.get_height()
-        x, y = 350, 400
-
-        pygame.draw.rect(screen, YELLOW, (x, y, w, h),
-                         border_radius=10)
-        screen.blit(text_player, (x + (w - text_player.get_width()) // 2,
-                                  y + (h - text_player.get_height()) // 2))
-
-        # score dealer
-        if reveal_dealer:
-            text_dealer = SMALLER_FONT.render(
-                f"Score: {dealer}", True, DARKGREEN)
-            w2 = text_dealer.get_width()
-            h2 = text_dealer.get_height()
-            x2, y2 = 350, 120
-
-            pygame.draw.rect(screen, YELLOW,
-                             (x2, y2, w2, h2), border_radius=10)
-            screen.blit(text_dealer, (x2 + (w2 - text_dealer.get_width()) // 2,
-                                      y2 + (h2 - text_dealer.get_height()) // 2))
-
-    # draw cards visually onto screen
-
-    def draw_cards(player, dealer, reveal):
-        for i in range(len(player)):
-            value = player[i][:-1]
-            suit = player[i][-1]
-            color = RED if suit in ['♥', '♦'] else BLACK
-            pygame.draw.rect(screen, 'white', [
-                70 + (70 * i), 460 + (5 * i), 120, 220], 0, 5)
-            screen.blit(SMALLER_FONT.render(value + suit, True,
-                        color), (75 + 70 * i, 465 + 5 * i))
-            screen.blit(SMALLER_FONT.render(value + suit, True,
-                        color), (75 + 70 * i, 635 + 5 * i))
-            if color == RED:
-                pygame.draw.rect(
-                    screen, RED, [70 + (70 * i), 460 + (5 * i), 120, 220], 5, 5)
-            else:
-                pygame.draw.rect(
-                    screen, BLACK, [70 + (70 * i), 460 + (5 * i), 120, 220], 5, 5)
-
-        # if player hasn't finished turn, dealer will hide one card
-        for i in range(len(dealer)):
-            value = dealer[i][:-1]
-            suit = dealer[i][-1]
-            color = RED if suit in ['♥', '♦'] else BLACK
-            pygame.draw.rect(screen, WHITE, [
-                70 + (70 * i), 160 + (5 * i), 120, 220], 0, 5)
-            if i != 0 or reveal:
-                screen.blit(SMALLER_FONT.render(
-                    value + suit, True, color), (75 + 70 * i, 165 + 5 * i))
-                screen.blit(SMALLER_FONT.render(
-                    value + suit, True, color), (75 + 70 * i, 335 + 5 * i))
-            else:
-                screen.blit(SMALLER_FONT.render('???', True, BLACK),
-                            (75 + 70 * i, 165 + 5 * i))
-                screen.blit(SMALLER_FONT.render('???', True, BLACK),
-                            (75 + 70 * i, 335 + 5 * i))
-            if color == RED:
-                pygame.draw.rect(
-                    screen, RED, [70 + (70 * i), 160 + (5 * i), 120, 220], 5, 5)
-            else:
-                pygame.draw.rect(screen, BLACK, [
-                    70 + (70 * i), 160 + (5 * i), 120, 220], 5, 5)
-
-    # pass in player or dealer hand and get best score possible
-    def calculate_score(hand):
-        # calculate hand score fresh every time, check how many aces we have
-        hand_score = 0
-        aces_count = sum(1 for card in hand if card[:-1] == 'A')
-        for i in range(len(hand)):
-            card_value = hand[i][:-1]
-            # for 2,3,4,5,6,7,8,9 - just add the number to total
-            for j in range(8):
-                if card_value == cards[j]:
-                    hand_score += int(card_value)
-            # for 10 and face cards, add 10
-            if card_value in ['10', 'J', 'Q', 'K']:
-                hand_score += 10
-            # for aces start by adding 11, we'll check if we need to reduce afterwards
-            elif card_value == 'A':
-                hand_score += 11
-        # determine how many aces need to be 1 instead of 11 to get under 21 if possible
-        if hand_score > 21 and aces_count > 0:
-            for i in range(aces_count):
-                if hand_score > 21:
-                    hand_score -= 10
-        return hand_score
-
-    # draw game conditions and buttons
-    def draw_game(act, record, result, name):
-        button_list = []
-        player_name = name
-        # initially on startup (not active) only option is to deal new hand
-        if not act:
-            mouse = pygame.mouse.get_pos()
-            deal = pygame.Rect(618, 80, 300, 100)
-            hover_deal = deal.collidepoint(mouse)
-            draw_button("Deal hand", 618, 80, 300, 100, hover_deal)
-            button_list.append(deal)
-
-        # once game started, shot hit and stand buttons and win/loss records
-        else:
-            mouse = pygame.mouse.get_pos()
-            hit = pygame.Rect(10, 700, 300, 100)
-            hover_hit = hit.collidepoint(mouse)
-            draw_button("Hit", 10, 700, 300, 100, hover_hit)
-            button_list.append(hit)
-            stand = pygame.Rect(350, 700, 300, 100)
-            hover_stand = stand.collidepoint(mouse)
-            draw_button("Stand", 350, 700, 300, 100, hover_stand)
-            button_list.append(stand)
-
-            player_text = SMALLER_FONT.render(
-                f"Game history of {player_name}:", True, WHITE)
-            player_text_width = player_text.get_width()
-            score_text = SMALLER_FONT.render(
-                f'Wins: {record[0]}   Losses: {record[1]}   Draws: {record[2]}', True, WHITE)
-            score_text_width = score_text.get_width()
-            screen_width = screen.get_width()
-            x1 = (screen_width - player_text_width) // 2
-            x2 = (screen_width - score_text_width) // 2
-            screen.blit(player_text, (x1, 20))
-            screen.blit(score_text, (x2, 80))
-
-        # if there is an outcome for the hand that was played, display a restart button and tell user what happened
-        if result != 0:
-            text_result = FONT.render(results[result], True, RED)
-            text_width = text_result.get_width()
-            text_height = text_result.get_height()
-            screen_width = screen.get_width()
-            x = (screen_width - text_width) // 2
-
-            pygame.draw.rect(
-                screen, YELLOW, (x, 500, text_width, text_height), border_radius=10)
-            screen.blit(text_result, (x, 500))
-
-            mouse = pygame.mouse.get_pos()
-            new_hand = pygame.Rect(150, 220, 300, 100)
-            hover_new = new_hand.collidepoint(mouse)
-            draw_button("New hand", 150, 220, 300, 100, hover_new)
-            button_list.append(new_hand)
-
-        return button_list
-
-    # check endgame conditions function
-    def check_endgame(hand_act, deal_score, play_score, result, totals, add):
-        # check end game scenarios is player has stood, busted or blackjacked
-        # result 1- player bust, 2-win, 3-loss, 4-push
-        if not hand_act and deal_score >= 17:
-            if play_score > 21:
-                result = 1
-            elif deal_score < play_score <= 21 or deal_score > 21:
-                result = 2
-            elif play_score < deal_score <= 21:
-                result = 3
-            else:
-                result = 4
-            if add:
-                if result == 1 or result == 3:
-                    totals[1] += 1
-                elif result == 2:
-                    totals[0] += 1
-                else:
-                    totals[2] += 1
-                add = False
-        return result, totals, add
-
     # main game loop
     run = True
     while run:
@@ -480,8 +476,8 @@ def start_blackjack_game(name):
                 dealer_score = calculate_score(dealer_hand)
                 if dealer_score < 17:
                     dealer_hand, game_deck = deal_cards(dealer_hand, game_deck)
-            draw_scores(player_score, dealer_score)
-        buttons = draw_game(active, records, outcome, name)
+            draw_scores(player_score, dealer_score, reveal_dealer)
+        buttons = draw_game(active, records, results, outcome, name)
 
         # event handling, if quit pressed, then exit game
         for event in pygame.event.get():
