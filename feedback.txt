@@ -1,0 +1,16 @@
+Dag Daan
+
+Voor ik start met mijn feedback over de cursus Introductieproject wil ik kort mijn achtergrond schetsen, zodat je weet hoe je mijn feedback kan kaderen. Ik ben een student in het eerste jaar afstandsonderwijs Toegepaste Informatica. Voor ik startte met de opleiding, had ik geen ervaring met programmeren. Ik werk ondertussen 18 jaar waarvan een jaar of 10 in een IT-omgeving, maar als business partij.  Omdat ik graag de overstap wil maken richting IT, ben ik gestart met deze opleiding. 
+
+Er waren heel veel challenges om te proberen. Er kwamen veel verschillende onderwerpen aan bod, wat het interessant hield. Een disclaimer voor het mogelijks belanden in een rabbit hole was bij bepaalde onderwerpen misschien op zijn plaats geweest :-)  De balans tussen makkelijke en moeilijke challenges waren er zeker, dus dat zat goed. 
+
+Voor sommige challenges (bijvoorbeeld image search) was het me niet 100% duidelijk hoe de challenges moesten opgelost worden. Of er een bepaalde techniek bestaat om afbeeldingen te zoeken, of gewoon zoals ik het gedaan heb, via Google Lens. Iets meer sturing was aangewezen geweest voor een leek. 
+
+Een van de opdrachten is ook rond communicatie. Er moest contact opgenomen worden met de lector voor vragen te stellen. Ik heb dit gedaan, maar heb geen antwoord ontvangen. Mogelijks is dit verdwenen tussen de andere mails, want op mijn vraag voor feedback van het project heb ik wel zeer snel een antwoord ontvangen.  
+
+Het project vond ik leuk om te doen. Ik had toevallig een boek gelezen van Python waar je ook een game moest maken, dus ik was al een beetje vertrouwd met Pygame. Indien dit niet het geval was, denk ik dat 20u aan het project besteden aan de lage kant is, aangezien je toch redelijk wat dingen moet opzoeken over hoe Pygame werkt in de documentatie. Ze geven ook een richtlijn dat een studiepunt ongeveer 25u aan werk is. Dit vak heeft er 6, dus zou 150u moeten zijn. Dan lijkt me 20u voor het project ook iets aan de lage kant. 
+
+Het OPO Introductieproject bood veel variatie met de verschillende challenges en het project, als starter miste ik wel wat extra richting en ondersteuning. Ik heb me met beide geamuseerd en het vak heeft zeker een toegevoegde waarde in de opleiding Toegepaste Informatica.
+
+Met vriendelijke groeten
+Dario

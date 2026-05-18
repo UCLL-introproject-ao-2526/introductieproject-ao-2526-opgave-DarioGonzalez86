@@ -78,9 +78,8 @@ def add_new_player(player):
         writer = csv.writer(output_file)
         writer.writerow([player, 0, 0, 0])  # win, lose, draw
 
+
 # Functions to check if a player exists in  the csv file
-
-
 def check_player(player):
     with open(CSV_FILE, "r", newline="", encoding="utf-8") as input_file:
         reader = csv.reader(input_file)
@@ -90,9 +89,8 @@ def check_player(player):
                 return True
     return False
 
+
 # Function to get the correct name of the player (to show correct statistics if not the correct upper/lower case was used)
-
-
 def get_correct_player_name(player):
     with open(CSV_FILE, "r", newline="", encoding="utf-8") as f:
         reader = csv.reader(f)
@@ -301,9 +299,8 @@ def draw_scores(player, dealer, reveal_dealer):
         screen.blit(text_dealer, (x2 + (w2 - text_dealer.get_width()) // 2,
                                   y2 + (h2 - text_dealer.get_height()) // 2))
 
+
 # draw cards visually onto screen
-
-
 def draw_cards(player, dealer, reveal):
     for i in range(len(player)):
         value = player[i][:-1]

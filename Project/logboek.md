@@ -121,11 +121,18 @@ Een dag of 2 na mijn vraag heb ik feedback ontvangen van de lector. Volgende aan
 
 
 ## 17 mei
+
 Vandaag wou ik de opmerking rond nesting aanpakken. Hoe meer ik naar de code kijk, hoe meer dingen ik zie wat eigenlijk niet 100% correct zijn. 
 - Zo heb ik 2x de functie draw_button, maar beiden worden anders gebruikt. Ik heb gekozen om de versie te behouden die in de globale helper functies staat, en niet in de lokale blackjack-code. De versie in de helper functie gebruikt 1 rect-paramters in plaats van de aparte x,y,h,w parameters. 
 - In de functie start_blackjack_game zitten heel veel andere functies (zoals deal_cards, calculate_scores, ...), deze kunnen in principe allemaal uit deze hoofdfunctie gehaald worden, wat ik dan ook tot het maximale gedaan heb. Er moesten soms wat extra parameters doorgegeven worden aan de functies zelfs, maar alles lijkt te werken en de functie start_blackjack_game bevast nu enkel locale parameters en de main game loop.
 - De opmerking rond nesting vond ik moeilijker omdat dit de code is die uit de toturial kwam en dus niet zelf geschreven is. Dit is voor later. Ondertussen heb ik mijn wijzigen gecommit zodat ik altijd terug naar deze werkende versie kan als het aanpakken van de nesting niet werkt zoals ik wou.
 
+
+## 18 mei
+
+Gisteren en vandaag nog geprobeerd het stuk van nesting aan te pakken, maar ik heb m'n code terug moeten pullen van github, het ging niet zoals ik wou en de aanpassingen brachten me te ver. Ik ga het dus hierbij laten en deze aanpassing niet meer doen. 
+
+Dit is dan ook het einde van het project voor mij en 
 
 
 
